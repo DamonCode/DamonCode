@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://www.appcoda.com/wp-content/uploads/2015/10/concurrency-demo.png">
 <meta property="og:image" content="http://www.appcoda.com/wp-content/uploads/2015/10/NSOperation-Fig2.png">
 <meta property="og:image" content="http://www.appcoda.com/wp-content/uploads/2015/10/ios-concurrency-cancel-demo.png">
-<meta property="og:updated_time" content="2017-08-11T08:01:18.000Z">
+<meta property="og:updated_time" content="2017-08-11T08:04:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Concurrency: Getting Started with NSOperation and Dispatch Queues">
 <meta name="twitter:description" content="译自:iOS Concurrency: Getting Started with NSOperation and Dispatch Queues iOS 多线程编程：使用 NSOperation 和 GCD 进行多线程编程在 iOS 开发中,并发通常被视作”洪水猛兽”。许多开发者认为这是”危险地带”,因此都极力避免使用它。传闻多线程代码应该尽你所能去避免使用。我也认为在你没有很好掌握并发编程的时候">
@@ -152,7 +152,7 @@
 </ul>
 <h2 id="CGD-图表"><a href="#CGD-图表" class="headerlink" title="CGD 图表"></a>CGD 图表</h2><p>现在你应该对 <code>dispatch queue</code> 有了初步的理解。现在, 我将会给你一个简单的图表供你参考。这个表格很简单, 包含了所有你需要了解关于 GCD 的知识点。<br><img src="http://www.appcoda.com/wp-content/uploads/2015/10/gcd-cheatsheet.png" alt=""></p>
 <p>非常 cool，对吧？现在让我们编写一个简单的 demo 来了解如何使用 dispatch queues 。我将会展示给你如何使用 dispatch queues 来优化一个 app 的性能 使得其响应更快。</p>
-<h2 id="Demo-Project"><a href="#Demo-Project" class="headerlink" title="Demo Project"></a>Demo Project</h2><p>我们的启动项目非常的简单，我们展示四个 image views ,每一个从指定站点请求一个图片。图片请求在主线程完成。为了展示给你 UI 是如何的响应, 我已经添加了简单的 slider 在图片下边。现在 <a href="https://www.dropbox.com/s/lkiasutevec5vx0/ConcurrencyDemoStarter.zip?dl=0" target="_blank" rel="external">下载并运行项目</a>。点击 Start 按钮来开始下载图片,然后拖动 slider 当图片下载的时候。你将会发现 slider 拖不动。<br><img src="http://www.appcoda.com/wp-content/uploads/2015/10/concurrency-demo.png" alt=""><br>在你点击了开始按钮后, 图片在主线程开始瞎子啊。显而易见, 这种做法非常可怕, 并且使得 UI 无响应。不幸的是, 时至今日，仍然有很多 app 在主线做许多繁重的加载任务。现在让我们一起来使用 dispatch queues 来修复这个问题吧!<br>首先, 我们将要使用并发队列然后再使用串行队列来实现解决方案。</p>
+<h2 id="Demo-Project"><a href="#Demo-Project" class="headerlink" title="Demo Project"></a>Demo Project</h2><p>我们的启动项目非常的简单，我们展示四个 image views ,每一个从指定站点请求一个图片。图片请求在主线程完成。为了展示给你 UI 是如何的响应, 我已经添加了简单的 slider 在图片下边。现在 <a href="https://github.com/DamonCode/Blog/tree/master/GCD" target="_blank" rel="external">下载并运行项目</a>。点击 Start 按钮来开始下载图片,然后拖动 slider 当图片下载的时候。你将会发现 slider 拖不动。<br><img src="http://www.appcoda.com/wp-content/uploads/2015/10/concurrency-demo.png" alt=""><br>在你点击了开始按钮后, 图片在主线程开始瞎子啊。显而易见, 这种做法非常可怕, 并且使得 UI 无响应。不幸的是, 时至今日，仍然有很多 app 在主线做许多繁重的加载任务。现在让我们一起来使用 dispatch queues 来修复这个问题吧!<br>首先, 我们将要使用并发队列然后再使用串行队列来实现解决方案。</p>
 <h3 id="使用并发队列"><a href="#使用并发队列" class="headerlink" title="使用并发队列"></a>使用并发队列</h3><p>先在 Xcode 中打开 <code>ViewController.swift</code>。如果你仔细看了代码的话，你会看到 <code>didClickOnStart</code> 方法。这个方法进行了图片下载。我们现在执行任务如下所示：</p>
 <pre><code>@IBAction func didClickOnStart(sender: AnyObject) {
     let img1 = Downloader.downloadImageWithURL(imageURLs[0])
